@@ -1,0 +1,73 @@
+<div class="card">
+    <div
+        class="flex justify-content-between flex-column-reverse md:flex-row align-items-center"
+    >
+        <div>
+            <div
+                class="text-xl text-900 mb-4 mt-4 md:mt-0 text-center md:text-left font-semibold md:pr-4"
+            >
+                {{ blogDataObject.title }}
+            </div>
+            <div
+                class="flex flex-wrap justify-content-center md:justify-content-start gap-3"
+            >
+                <span
+                    class="inline-flex align-items-center py-2 px-3 font-medium border-1 surface-border border-round"
+                >
+                    <i class="pi pi-clock text-primary mr-2"></i>
+                    <span class="text-900">
+                        {{
+                            blogDataObject.updated_at | date : "MMM dd, y"
+                        }}</span
+                    >
+                </span>
+                <span
+                    class="inline-flex align-items-center py-2 px-3 font-medium border-1 surface-border border-round"
+                >
+                    <i class="pi pi-comments text-primary mr-2"></i>
+                    <span class="text-900">{{
+                        totalComment == 0 ? 0 : totalComment
+                    }}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="text-center my-6">
+        <img
+            #image
+            [src]="blogDataObject.image?.url"
+            (error)="image.src = './assets/layout/images/no_image.jpg'"
+            alt="Image"
+            class="w-full"
+            loading="lazy"
+        />
+    </div>
+    <div class="content-blog">
+        {{ blogDataObject.content }}
+    </div>
+    <div class="flex flex-column sm:flex-row my-8 w-full gap-3">
+        <button
+            pButton
+            pRipple
+            icon="pi pi-twitter"
+            class="p-button-secondary"
+            label="Twitter"
+        ></button>
+        <button
+            pButton
+            pRipple
+            icon="pi pi-facebook"
+            class="p-button-secondary"
+            label="Facebook"
+        ></button>
+        <button
+            routerLink="/edit-blog/{{ id }}"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="sm:ml-auto"
+            label="Edit Post"
+        ></button>
+    </div>
+    <app-comment-blog [dataCommentList]="dataCommentList"></app-comment-blog>
+</div>

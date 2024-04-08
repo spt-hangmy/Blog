@@ -1,0 +1,94 @@
+<div class="button text-right mb-5">
+    <button
+        [routerLink]="['/create-blog']"
+        pButton
+        pRipple
+        icon="pi pi-plus"
+        class="sm:ml-auto"
+        label="Create Post"
+    ></button>
+</div>
+<div class="card">
+    <div class="p-dataview-header">
+        <form [formGroup]="blogsForm">
+            <div
+                class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between"
+            >
+                <div class="col-12 col-sm-4">
+                    <input
+                        type="text"
+                        class="form-control form-control-solid w-250px ps-14"
+                        placeholder="Search"
+                        formControlName="search"
+                        (focusout)="onFocusOut($event)"
+                        (keyup.enter)="onFocusOut($event)"
+                        (focus)="onInputFocus()"
+                        (input)="onInputChange($event)"
+                    />
+                </div>
+                <div class="col-12 col-sm-3">
+                    <p-dropdown
+                        [style]="{ width: '100%' }"
+                        [options]="blogSortList"
+                        optionLabel="name"
+                        formControlName="sort_by"
+                        optionValue="id"
+                        placeholder="Sort by"
+                        (onChange)="onSortDirectionChange()"
+                    >
+                        >
+                    </p-dropdown>
+                </div>
+            </div>
+        </form>
+    </div>
+    <ul class="list-unstyled">
+        <ng-container *ngFor="let itemBlog of arrayBlog">
+            <li class="media mb-5">
+                <div class="media-image">
+                    <a routerLink="blog-detail/{{ itemBlog.id }}">
+                        <img
+                            #image
+                            [src]="itemBlog.image?.url"
+                            (error)="
+                                image.src =
+                                    './assets/layout/images/no_image.jpg'
+                            "
+                            class="mr-3"
+                            alt="..."
+                            loading="lazy"
+                        />
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h5 class="mt-0 mb-1">
+                        <a routerLink="blog-detail/{{ itemBlog.id }}">{{
+                            itemBlog.title
+                        }}</a>
+                    </h5>
+                    <p>{{ itemBlog.content }}</p>
+                </div>
+            </li>
+        </ng-container>
+    </ul>
+    <nav aria-label="Page navigation" *ngIf="totalPages">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" href="#" (click)="prevPage()">Previous</a>
+            </li>
+            <ng-container *ngFor="let page of totalPagesArray">
+                <li class="page-item" [class.active]="page === currentPage">
+                    <a
+                        class="page-link"
+                        href="#"
+                        (click)="currentPage = page; goToPage(page)"
+                        >{{ page }}</a
+                    >
+                </li>
+            </ng-container>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" href="#" (click)="nextPage()">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

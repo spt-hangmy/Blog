@@ -1,0 +1,131 @@
+<p-toast></p-toast>
+<div class="card">
+    <span class="block text-900 font-bold text-xl mb-4">Create a new blog</span>
+    <form [formGroup]="blogsForm">
+        <div class="grid">
+            <div class="col-12 lg:col-8">
+                <div class="flex flex-column p-fluid">
+                    <div class="mb-4">
+                        <input
+                            formControlName="title"
+                            class="form-control form-control-solid ps-14"
+                            type="text"
+                            pInputText
+                            placeholder="Title"
+                            [ngClass]="{
+                                'is-invalid': submitted && f['title'].errors
+                            }"
+                        />
+                        <div *ngIf="submitted && f['title'].errors" class="invalid-feedback">
+                            <div *ngIf="f['title']?.errors?.['required']">
+                                Title is required
+                            </div>
+                        </div>
+                    </div>
+                    <textarea
+                        placeholder="Content"
+                        class="form-control form-control-solid ps-14"
+                        formControlName="content"
+                        [ngClass]="{
+                            'is-invalid': submitted && f['content'].errors
+                        }"
+                        [style]="{ height: '250px' }"
+                    ></textarea>
+                    <div *ngIf="submitted && f['content'].errors" class="invalid-feedback">
+                        <div *ngIf="f['content']?.errors?.['required']">
+                            Content is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 lg:col-4">
+                <p-fileUpload
+                    #fileUploader
+                    (onUpload)="onUpload($event)"
+                    [customUpload]="true"
+                    [multiple]="true"
+                    (onSelect)="onUpload($event)"
+                    accept="image/*"
+                    [auto]="true"
+                    styleClass="border-1 surface-border surface-card p-0 border-round mb-4"
+                >
+                    <ng-template pTemplate="content">
+                        <div class="h-20rem m-1 border-round">
+                            <div
+                                *ngIf="!objectURL"
+                                class="flex flex-column w-full h-full justify-content-center align-items-center cursor-pointer"
+                                (click)="
+                                    fileUploader.advancedFileInput.nativeElement.click()
+                                "
+                            >
+                                <i
+                                    class="pi pi-fw pi-file text-4xl text-primary"
+                                ></i>
+                                <span
+                                    class="block font-semibold text-900 text-lg mt-3"
+                                    >Drop or select a cover image</span
+                                >
+                            </div>
+                            <div
+                                *ngIf="objectURL"
+                                class="w-full h-full relative border-round p-0"
+                            >
+                                <img
+                                    [src]="objectURL"
+                                    class="w-full h-full border-round"
+                                    alt="blog cover"
+                                />
+                                <button
+                                    pButton
+                                    pRipple
+                                    type="button"
+                                    icon="pi pi-times"
+                                    class="p-button-rounded p-button-primary text-sm absolute justify-content-center align-items-center"
+                                    style="top: -10px; right: -10px"
+                                    (click)="
+                                        $event.stopPropagation(); removeImage()
+                                    "
+                                ></button>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-fileUpload>
+                <div class="flex justify-content-between gap-3">
+                    <button
+                        *ngIf="idblog"
+                        pButton
+                        pRipple
+                        class="p-button-danger flex-1 p-button-outlined"
+                        label="Delete"
+                        icon="pi pi-fw pi-trash"
+                        (click)="deleteBlog()"
+                    ></button>
+                    <button
+                        pButton
+                        pRipple
+                        (click)="onSubmit()"
+                        class="p-button-primary flex-1"
+                        label="Publish"
+                        icon="pi pi-fw pi-check"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<p-dialog [(visible)]="deleteConfirmDialog" [modal]="true" [style]="{ width: '450px' }">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>
+            Do you want to delete this blog ?
+        </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" (click)="deleteConfirmDialog = false">
+            <span class="ml-1">Cancel</span>
+        </button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-info" (click)="confirmDelete()">
+            <span class="ml-1">Confirm</span>
+        </button>
+    </ng-template>
+</p-dialog>
